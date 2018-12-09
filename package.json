@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@slack/client": "^4.8.0",
-    "dialogflow": "^0.7.0"
+    "dialogflow": "^0.7.0",
+    "uuid": "^3.3.2"
   }
 }
