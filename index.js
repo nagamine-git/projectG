@@ -1,4 +1,7 @@
+const dialogflow = require("dialogflow");
 const { RTMClient } = require("@slack/client");
+const uuid = require("uuid");
+
 const token = process.env.NODE_KEY;
 
 const rtm = new RTMClient(token);
@@ -6,43 +9,64 @@ const rtm = new RTMClient(token);
 rtm.start();
 
 const projectId = "xorassistant";
-const sessionId = "quickstart-session-id";
+const sessionId = uuid.v4();
 const languageCode = "ja";
 
-// Instantiate a DialogFlow client.
-const dialogflow = require("dialogflow");
 const sessionClient = new dialogflow.SessionsClient();
-
-// Define session path
 const sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
-rtm.on("message", async event => {
-  const request = {
-    session: sessionPath,
-    queryInput: {
-      text: {
-        text: event.text,
-        languageCode: languageCode
+rtm.on("message", event => {
+  if (event.text) {
+    const request = {
+      session: sessionPath,
+      queryInput: {
+        text: {
+          text: event.text,
+          languageCode: languageCode
+        }
       }
-    }
-  };
-  sessionClient
-    .detectIntent(request)
-    .then(responses => {
-      const result = responses[0].queryResult;
-      if (result.action == "input.todo") {
-        rtm.sendMessage(
-          `Todo追加しますか？ \n 追加する場合は => :writing_hand:`,
-          event.channel
-        );
-      }
-    })
-    .catch(err => {
-      console.error("ERROR:", err);
-    });
+    };
+    sessionClient
+      .detectIntent(request)
+      .then(responses => {
+        const result = responses[0].queryResult;
+        if (result.action == "input.todo") {
+          rtm.webClient.chat.postMessage({
+            text: "XorListに追加しますか？",
+            attachments: [
+              {
+                fallback: "失敗しました",
+                callback_id: "add_list",
+                color: "#3AA3E3",
+                attachment_type: "default",
+                actions: [
+                  {
+                    name: "boolean",
+                    text: "追加する",
+                    type: "button",
+                    value: "true",
+                    style: "primary"
+                  },
+                  {
+                    name: "boolean",
+                    text: "追加しない",
+                    type: "button",
+                    value: "false"
+                  }
+                ]
+              }
+            ],
+            channel: event.channel
+          });
+        }
+      })
+      .catch(err => {
+        console.error("ERROR:", err);
+      });
+  }
 });
 
-rtm.on("reaction_added", async event => {
+rtm.on("reaction_added", event => {
   if (event.reaction == "writing_hand") {
     const e = event;
     rtm.webClient.chat.getPermalink(
