@@ -9,15 +9,15 @@ const rtm = new RTMClient(token);
 rtm.start();
 
 const projectId = "xorassistant";
-const sessionId = uuid.v4();
 const languageCode = "ja";
 
 const sessionClient = new dialogflow.SessionsClient();
-const sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
 const ask_text = "XorListに追加しますか？";
 
 rtm.on("message", event => {
+  const sessionId = uuid.v4();
+  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
   if (event.text && event.text != ask_text) {
     const request = {
       session: sessionPath,
