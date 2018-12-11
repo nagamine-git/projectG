@@ -15,8 +15,10 @@ const languageCode = "ja";
 const sessionClient = new dialogflow.SessionsClient();
 const sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
+const ask_text = "XorListに追加しますか？";
+
 rtm.on("message", event => {
-  if (event.text) {
+  if (event.text && event.text != ask_text) {
     const request = {
       session: sessionPath,
       queryInput: {
@@ -32,7 +34,7 @@ rtm.on("message", event => {
         const result = responses[0].queryResult;
         if (result.action == "input.todo") {
           rtm.webClient.chat.postMessage({
-            text: "XorListに追加しますか？",
+            text: ask_text,
             attachments: [
               {
                 fallback: "失敗しました",
