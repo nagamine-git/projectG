@@ -33,33 +33,43 @@ rtm.on("message", event => {
       .then(responses => {
         const result = responses[0].queryResult;
         if (result.action == "input.todo") {
-          rtm.webClient.chat.postMessage({
-            text: ask_text,
-            attachments: [
-              {
-                fallback: "失敗しました",
-                callback_id: "add_list",
-                color: "#3AA3E3",
-                attachment_type: "default",
-                actions: [
+          rtm.webClient.chat.getPermalink(
+            {
+              channel: event.channel,
+              message_ts: event.ts
+            },
+            (err, data) => {
+              let link = data.permalink;
+              rtm.webClient.chat.postMessage({
+                text: ask_text + "\n" + link,
+                attachments: [
                   {
-                    name: "boolean",
-                    text: "追加する",
-                    type: "button",
-                    value: "true",
-                    style: "primary"
-                  },
-                  {
-                    name: "boolean",
-                    text: "追加しない",
-                    type: "button",
-                    value: "false"
+                    text: event.text,
+                    fallback: "失敗しました",
+                    callback_id: "add_list",
+                    color: "#3AA3E3",
+                    attachment_type: "default",
+                    actions: [
+                      {
+                        name: "boolean",
+                        text: "追加する",
+                        type: "button",
+                        value: "true",
+                        style: "primary"
+                      },
+                      {
+                        name: "boolean",
+                        text: "追加しない",
+                        type: "button",
+                        value: "false"
+                      }
+                    ]
                   }
-                ]
-              }
-            ],
-            channel: event.channel
-          });
+                ],
+                channel: event.channel
+              });
+            }
+          );
         }
       })
       .catch(err => {
