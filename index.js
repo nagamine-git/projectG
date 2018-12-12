@@ -41,7 +41,7 @@ rtm.on("message", event => {
             (err, data) => {
               let link = data.permalink;
               rtm.webClient.chat.postMessage({
-                text: ask_text + "\n" + link,
+                text: `${ask_text}\n${link}`,
                 attachments: [
                   {
                     text: event.text,
@@ -89,7 +89,7 @@ rtm.on("reaction_added", event => {
       (err, data) => {
         let link = data.permalink;
         rtm.sendMessage(
-          `<@${e.user}> Todoに追加しました ${link}`,
+          `<@${e.user}> Todoに追加しました \n${link}`,
           e.item.channel
         );
       }
