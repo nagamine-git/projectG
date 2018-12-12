@@ -49,22 +49,22 @@ rtm.on("message", event => {
                         name: "boolean",
                         text: "追加する",
                         type: "button",
-                        value: {
+                        value: JSON.stringify({
                           is_add: true,
                           text: event.text,
                           link: link
-                        },
+                        }),
                         style: "primary"
                       },
                       {
                         name: "boolean",
                         text: "追加しない",
                         type: "button",
-                        value: {
+                        value: JSON.stringify({
                           is_add: false,
                           text: event.text,
                           link: link
-                        }
+                        })
                       }
                     ]
                   }
