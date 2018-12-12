@@ -25,54 +25,53 @@ rtm.on("message", event => {
     };
     sessionClient
       .detectIntent(request)
-      .then(responses => {
+      .then(async responses => {
         const result = responses[0].queryResult;
         if (result.action == "input.todo") {
-          rtm.webClient.chat.getPermalink(
-            {
-              channel: event.channel,
-              message_ts: event.ts
-            },
-            (err, data) => {
-              let link = data.permalink;
-              rtm.webClient.chat.postMessage({
-                text: `${ask_text}\n${link}`,
-                attachments: [
+          let user_info = await rtm.webClient.users.info({
+            user: event.user
+          });
+          let link = await rtm.webClient.chat.getPermalink({
+            channel: event.channel,
+            message_ts: event.ts
+          });
+          rtm.webClient.chat.postMessage({
+            text: `${ask_text}\n${link.permalink}`,
+            attachments: [
+              {
+                text: event.text,
+                fallback: "失敗しました",
+                callback_id: "add_list",
+                color: "#3AA3E3",
+                attachment_type: "default",
+                author_name: user_info.user.name,
+                actions: [
                   {
-                    text: event.text,
-                    fallback: "失敗しました",
-                    callback_id: "add_list",
-                    color: "#3AA3E3",
-                    attachment_type: "default",
-                    actions: [
-                      {
-                        name: "boolean",
-                        text: "追加する",
-                        type: "button",
-                        value: JSON.stringify({
-                          is_add: true,
-                          text: event.text,
-                          link: link
-                        }),
-                        style: "primary"
-                      },
-                      {
-                        name: "boolean",
-                        text: "追加しない",
-                        type: "button",
-                        value: JSON.stringify({
-                          is_add: false,
-                          text: event.text,
-                          link: link
-                        })
-                      }
-                    ]
+                    name: "boolean",
+                    text: "追加する",
+                    type: "button",
+                    value: JSON.stringify({
+                      is_add: true,
+                      text: event.text,
+                      link: link
+                    }),
+                    style: "primary"
+                  },
+                  {
+                    name: "boolean",
+                    text: "追加しない",
+                    type: "button",
+                    value: JSON.stringify({
+                      is_add: false,
+                      text: event.text,
+                      link: link
+                    })
                   }
-                ],
-                channel: event.channel
-              });
-            }
-          );
+                ]
+              }
+            ],
+            channel: event.channel
+          });
         }
       })
       .catch(err => {
