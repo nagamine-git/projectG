@@ -18,15 +18,10 @@ const ask_text = "XorListに追加しますか？";
 rtm.on("message", event => {
   const sessionId = uuid.v4();
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-  if (event.text && event.text != ask_text) {
+  if (event.text && event.text.indexOf(ask_text) == -1) {
     const request = {
       session: sessionPath,
-      queryInput: {
-        text: {
-          text: event.text,
-          languageCode: languageCode
-        }
-      }
+      queryInput: { text: { text: event.text, languageCode: languageCode } }
     };
     sessionClient
       .detectIntent(request)
@@ -54,14 +49,22 @@ rtm.on("message", event => {
                         name: "boolean",
                         text: "追加する",
                         type: "button",
-                        value: "true",
+                        value: {
+                          is_add: true,
+                          text: event.text,
+                          link: link
+                        },
                         style: "primary"
                       },
                       {
                         name: "boolean",
                         text: "追加しない",
                         type: "button",
-                        value: "false"
+                        value: {
+                          is_add: false,
+                          text: event.text,
+                          link: link
+                        }
                       }
                     ]
                   }
