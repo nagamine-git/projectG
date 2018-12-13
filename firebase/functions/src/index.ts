@@ -5,6 +5,7 @@ import * as functions from "firebase-functions";
 //
 export const helloWorld = functions.https.onRequest((request, response) => {
   let payload = JSON.parse(request.body.payload);
+  console.log(payload);
   let request_value = JSON.parse(payload.actions[0].value);
   let user_name = payload.user.name;
   let text = request_value.is_add
@@ -15,6 +16,7 @@ export const helloWorld = functions.https.onRequest((request, response) => {
     text: `XorListに追加しますか？\n${request_value.link.permalink}`,
     attachments: [
       {
+        author_name: payload.user.name,
         attachment_type: "default",
         text: `${request_value.text}\n${text}`,
         color: "#3AA3E3"
