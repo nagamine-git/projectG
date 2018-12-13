@@ -12,7 +12,7 @@ export const helloWorld = functions.https.onRequest((request, response) => {
     : `:hand: ${user_name}が追加を許可しませんでした。`;
 
   response.send({
-    text: `XorListに追加しますか？\n${request_value.link}`,
+    text: `XorListに追加しますか？\n${request_value.link.permalink}`,
     attachments: [
       {
         attachment_type: "default",
