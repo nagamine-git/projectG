@@ -28,6 +28,7 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import db from './firebase/firebaseInit.js'
 export default {
   name: 'xor',
   data: () => ({
@@ -57,6 +58,7 @@ export default {
   },
   mounted () {
     this.changeView(this.$refs.app.clientWidth, (145 + this.items.length * 5))
+    console.log(db)
   },
   watch: {
     items () {
