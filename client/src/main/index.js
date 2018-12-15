@@ -25,13 +25,8 @@ function createWindow () {
     width: 400,
     transparent: true,
     frame: false,
-    resizable: true,
-    fullscreen: false,
-    x: 0,
-    y: 0
+    resizable: false
   })
-
-  mainWindow.setAlwaysOnTop(true)
 
   mainWindow.loadURL(winURL)
 
@@ -39,9 +34,10 @@ function createWindow () {
     mainWindow.setSize(arg.width, arg.height)
   })
 
+  app.dock.hide()
+  mainWindow.setAlwaysOnTop(true, 'floating')
   mainWindow.setVisibleOnAllWorkspaces(true)
-  
-  mainWindow.isVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+  mainWindow.setFullScreenable(false)
 
   mainWindow.on('closed', () => {
     mainWindow = null
