@@ -38,6 +38,7 @@ function createWindow () {
   mainWindow.setAlwaysOnTop(true, 'floating')
   mainWindow.setVisibleOnAllWorkspaces(true)
   mainWindow.setFullScreenable(false)
+  app.dock.show()
 
   mainWindow.on('closed', () => {
     mainWindow = null
