@@ -5,6 +5,7 @@
         <div v-for="item in items" :key="item.id">
           <v-card
             class="card"
+            :class="{expand: is_expand}"
             :style="{ top: (item.sequence * 5) + 'px' , 'z-index': -item.sequence}"
             >
             <v-card-title primary-title>
@@ -16,7 +17,7 @@
 
             <v-card-actions>
               <v-btn flat color="orange" @click="addTask(item.sequence)">Add</v-btn>
-              <v-btn flat color="orange" @click="addTask(item.sequence)">Expand</v-btn>
+              <v-btn flat color="orange" @click="expandTasks()">Expand</v-btn>
             </v-card-actions>
           </v-card>
         </div>
@@ -36,7 +37,8 @@ export default {
         title: 'ひとつめのtlite',
         description: 'ひとつめのdescriptionです'
       }
-    ]
+    ],
+    is_expand: false
   }),
   methods: {
     addTask (sequence) {
@@ -45,6 +47,9 @@ export default {
         title: 'そのほかのtlite',
         description: 'そのほかのdescriptionです'
       })
+    },
+    expandTasks () {
+      this.is_expand = !this.is_expand
     },
     changeView (width, height) {
       ipcRenderer.send('changeView', { width: width, height: height })
@@ -55,7 +60,18 @@ export default {
   },
   watch: {
     items () {
-      this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+      if (this.is_expand) {
+        this.changeView(this.$refs.app.clientWidth, (this.items.length * (113 + 5)))
+      } else {
+        this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+      }
+    },
+    is_expand () {
+      if (this.is_expand) {
+        this.changeView(this.$refs.app.clientWidth, (this.items.length * (113 + 5)))
+      } else {
+        this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+      }
     }
   }
 }
@@ -82,10 +98,13 @@ body {
   background-color: rgba(0, 0, 0, 0);
 }
 .card {
+  border-radius: 4px;
+  width: 400px;
   position: absolute;
   top: 0px;
-  z-index: 2;
-  width: 400px;
-  border-radius: 4px;
+}
+.card.expand {
+  position: relative;
+  top: auto;
 }
 </style>
