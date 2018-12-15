@@ -1,110 +1,91 @@
 <template>
-  <div id="app">
-    <v-app dark>
-      <v-navigation-drawer
-        fixed
-        :mini-variant="miniVariant"
-        :clipped="clipped"
-        v-model="drawer"
-        app
-      >
-        <v-list>
-          <v-list-tile 
-            router
-            :to="item.to"
-            :key="i"
-            v-for="(item, i) in items"
-            exact
-          >
-            <v-list-tile-action>
-              <v-icon v-html="item.icon"></v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title v-text="item.title"></v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-navigation-drawer>
-      <v-toolbar fixed app :clipped-left="clipped">
-        <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <v-btn 
-          icon
-          @click.native.stop="miniVariant = !miniVariant"
-        >
-          <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          @click.native.stop="clipped = !clipped"
-        >
-          <v-icon>web</v-icon>
-        </v-btn>
-        <v-btn
-          icon
-          @click.native.stop="fixed = !fixed"
-        >
-          <v-icon>remove</v-icon>
-        </v-btn>
-        <v-toolbar-title v-text="title"></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          icon
-          @click.native.stop="rightDrawer = !rightDrawer"
-        >
-          <v-icon>menu</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-content>
-        <v-container fluid fill-height>
-          <v-slide-y-transition mode="out-in">
-            <router-view></router-view>
-          </v-slide-y-transition>
-        </v-container>
-      </v-content>
-      <v-navigation-drawer
-        temporary
-        fixed
-        :right="right"
-        v-model="rightDrawer"
-        app
-      >
-        <v-list>
-          <v-list-tile @click.native="right = !right">
-            <v-list-tile-action>
-              <v-icon light>compare_arrows</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-navigation-drawer>
-      <v-footer :fixed="fixed" app>
-        <v-spacer></v-spacer>
-        <span>&copy; 2017</span>
-      </v-footer>
+  <div id="app" ref="app">
+    <v-app class="app" dark>
+      <v-layout class="layout">
+        <div v-for="item in items" :key="item.id">
+          <v-card
+            class="card"
+            :style="{ top: (item.sequence * 5) + 'px' , 'z-index': -item.sequence}"
+            >
+            <v-card-title primary-title>
+              <div>
+                <h3 class="headline mb-0">{{item.name}}</h3>
+                <div>{{item.description}}</div>
+              </div>
+            </v-card-title>
+
+            <v-card-actions>
+              <v-btn flat color="orange" @click="addTask(item.sequence)">Add</v-btn>
+              <v-btn flat color="orange" @click="addTask(item.sequence)">Expand</v-btn>
+            </v-card-actions>
+          </v-card>
+        </div>
+      </v-layout>
     </v-app>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'xor',
-    data: () => ({
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [
-        { icon: 'apps', title: 'Welcome', to: '/' },
-        { icon: 'bubble_chart', title: 'Inspire', to: '/inspire' }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
-    })
+import { ipcRenderer } from 'electron'
+export default {
+  name: 'xor',
+  data: () => ({
+    items: [
+      {
+        sequence: 0,
+        title: 'ひとつめのtlite',
+        description: 'ひとつめのdescriptionです'
+      }
+    ]
+  }),
+  methods: {
+    addTask (sequence) {
+      this.items.push({
+        sequence: this.items.length,
+        title: 'そのほかのtlite',
+        description: 'そのほかのdescriptionです'
+      })
+    },
+    changeView (width, height) {
+      ipcRenderer.send('changeView', { width: width, height: height })
+    }
+  },
+  mounted () {
+    this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+  },
+  watch: {
+    items () {
+      this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+    }
   }
+}
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
-  /* Global CSS */
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons");
+/* Global CSS */
+html,
+body {
+  background-color: rgba(0, 0, 0, 0);
+  display: inline-block;
+}
+.layout {
+  width: 400px;
+  display: inline-block;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+</style>
+<style scoped>
+/* Scoped CSS */
+.app {
+  background-color: rgba(0, 0, 0, 0);
+}
+.card {
+  position: absolute;
+  top: 0px;
+  z-index: 2;
+  width: 400px;
+  border-radius: 4px;
+}
 </style>
