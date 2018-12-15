@@ -10,13 +10,13 @@
             >
             <v-card-title primary-title>
               <div>
-                <h3 class="headline mb-0">{{item.name}}</h3>
+                <h3 class="headline mb-0">{{item.title}}</h3>
                 <div>{{item.description}}</div>
               </div>
             </v-card-title>
 
             <v-card-actions>
-              <v-btn flat color="orange" @click="addTask(item.sequence)">Add</v-btn>
+              <v-btn flat color="orange" @click="addTask(item.sequence)">Done</v-btn>
               <v-btn flat color="orange" @click="expandTasks()">Expand</v-btn>
             </v-card-actions>
           </v-card>
@@ -56,21 +56,21 @@ export default {
     }
   },
   mounted () {
-    this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+    this.changeView(this.$refs.app.clientWidth, (145 + this.items.length * 5))
   },
   watch: {
     items () {
       if (this.is_expand) {
-        this.changeView(this.$refs.app.clientWidth, (this.items.length * (113 + 5)))
+        this.changeView(this.$refs.app.clientWidth, (this.items.length * (145 + 5)))
       } else {
-        this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+        this.changeView(this.$refs.app.clientWidth, (145 + this.items.length * 5))
       }
     },
     is_expand () {
       if (this.is_expand) {
-        this.changeView(this.$refs.app.clientWidth, (this.items.length * (113 + 5)))
+        this.changeView(this.$refs.app.clientWidth, (this.items.length * (145 + 5)))
       } else {
-        this.changeView(this.$refs.app.clientWidth, (113 + this.items.length * 5))
+        this.changeView(this.$refs.app.clientWidth, (145 + this.items.length * 5))
       }
     }
   }
