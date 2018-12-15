@@ -31,6 +31,8 @@ function createWindow () {
     y: 0
   })
 
+  mainWindow.setAlwaysOnTop(true)
+
   mainWindow.loadURL(winURL)
 
   ipcMain.on('changeView', (event, arg) => {
