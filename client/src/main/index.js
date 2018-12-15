@@ -39,6 +39,10 @@ function createWindow () {
     mainWindow.setSize(arg.width, arg.height)
   })
 
+  mainWindow.setVisibleOnAllWorkspaces(true)
+  
+  mainWindow.isVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true})
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
