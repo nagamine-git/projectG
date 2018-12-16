@@ -2,12 +2,6 @@ import firestore from '../../firebase/firestore'
 
 const tasksRef = firestore.collection('tasks')
 
-tasksRef.get().then((snapshot) => {
-  snapshot.forEach((task) => {
-    console.log(task.data())
-  })
-})
-
 export default {
   namespaced: true,
   unsubscribe: null,
@@ -48,25 +42,16 @@ export default {
     },
     // 1. リスナーの起動
     startListener ({ commit }) {
-      console.log('起動')
-      if (this.unsubscribe) {
-        console.warn('listener is running. ', this.unsubscribe)
-        this.unsubscribe()
-        this.unsubscribe = null
-      }
       // 3. Firestoreからデータを検索する
-      this.unsubscribe = tasksRef.orderBy('sequence', 'asc').onSnapshot(querySnapshot => {
-        console.log(querySnapshot)
+      this.unsubscribe = tasksRef.orderBy('id', 'asc').onSnapshot(querySnapshot => {
         // 6. データが更新されるたびに呼び出される
-        querySnapshot.docChanges(change => {
-          console.log(change)
+        let changes = querySnapshot.docChanges()
+        changes.forEach((change) => {
           const payload = {
             id: change.doc.id,
             title: change.doc.data().title,
             description: change.doc.data().description,
-            platforms: change.doc.data().platforms,
-            million: change.doc.data().million,
-            releasedAt: new Date(change.doc.data().releasedAt.seconds * 1000)
+            sequence: change.doc.data().sequence
           }
 
           // 4. ミューテーションを通してステートを更新する
