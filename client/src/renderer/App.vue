@@ -6,7 +6,7 @@
           <v-card
             class="card"
             :class="{expand: is_expand}"
-            :style="{ top: (task.sequence * 5) + 'px' , 'z-index': -task.sequence}"
+            :style="{ top: (task.sequence * 5) + 'px' , 'z-index': -task.sequence, 'background-color': bg}"
             >
             <v-card-title primary-title>
               <div>
@@ -32,7 +32,8 @@ import { ipcRenderer } from 'electron'
 export default {
   name: 'xor',
   data: () => ({
-    is_expand: false
+    is_expand: false,
+    bg: '#424242'
   }),
   methods: {
     addTask (sequence) {
@@ -56,6 +57,13 @@ export default {
     },
     RemoveTask (id) {
       this.$store.dispatch('tasks/deletetask', {id})
+    },
+    changeColor () {
+      if (this.bg === '#424242') {
+        this.bg = '#fff'
+      } else {
+        this.bg = '#424242'
+      }
     }
   },
   mounted () {
@@ -64,7 +72,9 @@ export default {
     this.changeView(this.$refs.app.clientWidth, (145 + this.tasks.length * 5))
   },
   watch: {
-    tasks () {
+    tasks (task) {
+      setTimeout(this.changeColor, 0)
+      setTimeout(this.changeColor, 300)
       if (this.is_expand) {
         this.changeView(this.$refs.app.clientWidth, (this.tasks.length * (145 + 5)))
       } else {
@@ -79,7 +89,8 @@ export default {
         this.changeView(this.$refs.app.clientWidth, (145 + this.tasks.length * 5))
       }
       this.$forceUpdate()
-    }
+    },
+    deep: true
   },
   computed: {
     tasks () {
