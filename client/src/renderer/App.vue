@@ -10,8 +10,8 @@
             >
             <v-card-title primary-title>
               <div>
-                <h3 class="headline mb-0">{{task.title}}</h3>
-                <div>{{task.description}}</div>
+                <h3 class="headline">{{task.title}}</h3>
+                <span class="desc">{{task.description}}</span>
               </div>
             </v-card-title>
 
@@ -107,12 +107,25 @@ html,
 body {
   background-color: rgba(0, 0, 0, 0);
   display: inline-block;
+  overflow-y:hidden;
 }
 .layout {
   width: 400px;
   display: inline-block;
   -webkit-app-region: drag;
   -webkit-user-select: none;
+}
+.headline {
+  width: 380px;
+  white-space: nowrap; /* 横幅のMAXに達しても改行しない */
+  overflow: hidden; /* ハミ出した部分を隠す */
+  text-overflow: ellipsis; /* 「…」と省略 */
+}
+.desc {
+  width: 380px;
+  white-space: nowrap; /* 横幅のMAXに達しても改行しない */
+  overflow: hidden; /* ハミ出した部分を隠す */
+  text-overflow: ellipsis; /* 「…」と省略 */
 }
 </style>
 <style scoped>
