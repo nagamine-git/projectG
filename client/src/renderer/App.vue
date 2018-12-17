@@ -6,7 +6,7 @@
           <v-card
             class="card"
             :class="{expand: is_expand}"
-            :style="{ top: (task.sequence * 5) + 'px' , 'z-index': -task.sequence, 'background-color': bg}"
+            :style="{ top: calcTop(task.sequence) + 'px' , 'z-index': -task.sequence, 'background-color': bg}"
             >
             <v-card-title primary-title>
               <div>
@@ -63,6 +63,11 @@ export default {
         this.bg = '#fff'
       } else {
         this.bg = '#424242'
+      }
+    },
+    calcTop (sequence) {
+      if (sequence > 0) {
+        return sequence * 5
       }
     }
   },
@@ -140,7 +145,8 @@ body {
   top: 0px;
 }
 .card.expand {
-  position: relative;
-  top: auto;
+  margin-bottom: 5px;
+  position: static;
+  top: 0;
 }
 </style>
